@@ -9,9 +9,10 @@ datasource db {
 
 model User {
   id            String          @id @default(uuid())
-  kindeId       String          @unique
   email         String          @unique
+  username      String          @unique
   name          String?
+  profileImage  String?
   wallets       Wallet[]
   loans         Loan[]
   transactions  Transaction[]

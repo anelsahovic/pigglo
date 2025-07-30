@@ -7,9 +7,10 @@ CREATE TYPE "public"."LoanDirection" AS ENUM ('TO_SOMEONE', 'FROM_SOMEONE');
 -- CreateTable
 CREATE TABLE "public"."User" (
     "id" TEXT NOT NULL,
-    "kindeId" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
     "name" TEXT,
+    "profileImage" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -65,10 +66,10 @@ CREATE TABLE "public"."RelatedPerson" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_kindeId_key" ON "public"."User"("kindeId");
+CREATE UNIQUE INDEX "User_email_key" ON "public"."User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "public"."User"("email");
+CREATE UNIQUE INDEX "User_username_key" ON "public"."User"("username");
 
 -- AddForeignKey
 ALTER TABLE "public"."Wallet" ADD CONSTRAINT "Wallet_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
