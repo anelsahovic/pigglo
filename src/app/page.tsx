@@ -1,3 +1,4 @@
+import { buttonVariants } from '@/components/ui/button';
 import {
   RegisterLink,
   LoginLink,
@@ -11,12 +12,14 @@ export default async function Home() {
   const user = await getUser();
 
   return (
-    <div>
+    <div className="">
       Landing Page
       {!user ? (
         <div>
-          <LoginLink>Login</LoginLink>
-          <RegisterLink>Sign up</RegisterLink>
+          <LoginLink className={buttonVariants()}>Login</LoginLink>
+          <RegisterLink className={buttonVariants({ variant: 'secondary' })}>
+            Sign up
+          </RegisterLink>
         </div>
       ) : (
         <>
