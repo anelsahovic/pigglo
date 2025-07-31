@@ -1,7 +1,5 @@
 import React from 'react';
 
-type Props = {};
-
-export default function WalletsPage({}: Props) {
+export default function WalletsPage() {
   return <div>WalletsPage</div>;
 }

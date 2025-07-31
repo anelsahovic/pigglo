@@ -6,10 +6,16 @@ import {
 } from '@kinde-oss/kinde-auth-nextjs/components';
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { redirect } from 'next/navigation';
 
 export default async function Home() {
-  const { getUser } = getKindeServerSession();
+  const { getUser, isAuthenticated } = getKindeServerSession();
   const user = await getUser();
+  const hasSession = await isAuthenticated();
+
+  if (hasSession) {
+    redirect('/dashboard');
+  }
 
   return (
     <div className="">
@@ -23,7 +29,9 @@ export default async function Home() {
         </div>
       ) : (
         <>
-          <LogoutLink>Log out</LogoutLink>
+          <LogoutLink className={buttonVariants({ variant: 'destructive' })}>
+            Log out
+          </LogoutLink>
         </>
       )}
     </div>

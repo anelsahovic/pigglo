@@ -1,7 +1,5 @@
 import React from 'react';
 
-type Props = {};
-
-export default function LoansPage({}: Props) {
+export default function LoansPage() {
   return <div>LoansPage</div>;
 }

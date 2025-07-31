@@ -9,7 +9,6 @@ import {
   FaUser,
   FaUserPlus,
   FaPlusCircle,
-  FaArrowLeft,
 } from 'react-icons/fa';
 import { CgArrowsExchange } from 'react-icons/cg';
 import { LuWallet } from 'react-icons/lu';
@@ -26,6 +25,8 @@ import clsx from 'clsx';
 import { FaArrowRightArrowLeft } from 'react-icons/fa6';
 import { TbLogout2, TbMoneybag, TbUserEdit } from 'react-icons/tb';
 import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
+import { IoClose } from 'react-icons/io5';
+
 import {
   Sheet,
   SheetClose,
@@ -40,6 +41,7 @@ import { Button, buttonVariants } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { User } from '@prisma/client';
+import Image from 'next/image';
 
 const mobileNavItems = [
   { href: '/dashboard', icon: <FaChartBar />, label: 'Dashboard' },
@@ -57,6 +59,8 @@ type Props = {
 
 export default function MobileNavbar({ user }: Props) {
   const pathname = usePathname();
+
+  if (pathname === '/') return;
   return (
     <nav className="sm:hidden fixed bottom-0 inset-x-0 z-50 bg-background border-t shadow-lg h-16 flex items-center justify-around px-6">
       {mobileNavItems.slice(0, 2).map((item) => (
@@ -136,26 +140,33 @@ export default function MobileNavbar({ user }: Props) {
         </SheetTrigger>
 
         <SheetContent
-          className="w-full z-50  pt-4 pb-8 px-6 space-y-8 shadow-xl  md:hidden
+          className="w-full  z-50  pt-4 pb-8 px-6 space-y-8 shadow-xl  md:hidden
                [&>button:last-child]:hidden"
         >
           {/* Custom Close Button */}
           <SheetClose asChild>
             <button
               aria-label="Close"
-              className="absolute left-4 top-4 text-muted-foreground hover:text-primary transition-colors"
+              className="absolute top-4 left-4 z-50 p-2 text-muted-foreground hover:text-primary transition-colors  "
             >
-              <FaArrowLeft className="text-xl" />
+              <IoClose className="text-3xl" />
             </button>
           </SheetClose>
 
           {/* Header */}
           <div className="text-center space-y-1">
             <SheetTitle className="text-2xl font-semibold">
-              Your Profile
+              <div className="relative h-10">
+                <Image
+                  src="/logo.png"
+                  alt="Pigglo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
             </SheetTitle>
             <SheetDescription className="text-sm text-muted-foreground">
-              Manage your account
+              Manage your balance
             </SheetDescription>
           </div>
 
@@ -262,7 +273,6 @@ export default function MobileNavbar({ user }: Props) {
             </div>
 
             <LogoutLink
-              href="/loans"
               className={clsx(
                 buttonVariants({ variant: 'outline', size: 'lg' }),
                 'w-full '

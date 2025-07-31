@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import MobileNavbar from './MobileNavbar';
-import DesktopNavbar from './DesktopNavbar';
+import { AppSidebar } from './AppSidebar';
 
 export default async function Navbar() {
   const { getUser } = getKindeServerSession();
@@ -14,7 +14,7 @@ export default async function Navbar() {
   return (
     <>
       <MobileNavbar user={dbUser} />
-      <DesktopNavbar user={dbUser} />
+      <AppSidebar user={dbUser} />
     </>
   );
 }

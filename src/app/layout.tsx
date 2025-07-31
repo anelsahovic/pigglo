@@ -3,6 +3,8 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 import Navbar from '@/components/Navbar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -15,17 +17,30 @@ export const metadata: Metadata = {
   description: 'Manage your balance across all wallets',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { isAuthenticated } = getKindeServerSession();
+  const hasSession = await isAuthenticated();
+
   return (
     <AuthProvider>
       <html lang="en">
         <body className={` ${plusJakartaSans.variable} antialiased relative`}>
-          <Navbar />
-          {children}
+          {hasSession ? (
+            <SidebarProvider hasSession={hasSession}>
+              <Navbar />
+              <main className="relative w-full">
+                <SidebarTrigger />
+
+                <div className="p-4 sm:pt-10">{children}</div>
+              </main>
+            </SidebarProvider>
+          ) : (
+            <main>{children}</main>
+          )}
         </body>
       </html>
     </AuthProvider>
