@@ -12,6 +12,7 @@ model User {
   email         String          @unique
   username      String          @unique
   name          String?
+  currency      Currency        @default(EUR)
   profileImage  String?
   wallets       Wallet[]
   loans         Loan[]
@@ -24,6 +25,8 @@ model Wallet {
   id           String        @id @default(uuid())
   name         String
   balance      Decimal       @default(0)
+  currency     Currency      @default(EUR)
+  icon         WalletIcon    @default(WALLET)
   user         User          @relation(fields: [userId], references: [id])
   userId       String
   transactions Transaction[]
@@ -67,6 +70,16 @@ model RelatedPerson {
   createdAt DateTime @default(now())
 }
 
+model ExchangeRate {
+  id             String   @id @default(uuid())
+  baseCurrency   Currency
+  targetCurrency Currency
+  rate           Float
+  fetchedAt      DateTime @default(now())
+
+  @@unique([baseCurrency, targetCurrency, fetchedAt])
+}
+
 enum TransactionType {
   INCOME
   EXPENSE
@@ -75,4 +88,28 @@ enum TransactionType {
 enum LoanDirection {
   TO_SOMEONE // You loaned money to them
   FROM_SOMEONE // They loaned money to you
+}
+
+enum Currency {
+  USD
+  EUR
+  BAM
+  RSD
+  AUD
+  GBP
+}
+
+enum WalletIcon {
+  WALLET
+  BANK
+  CASH
+  SAFE
+  CARD
+  WISE
+  PAYONEER
+  PAYPAL
+  REVOLUT
+  PIGGYBANK
+  INVESTMENT
+  EMERGENCY
 }
