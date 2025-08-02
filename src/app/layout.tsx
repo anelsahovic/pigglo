@@ -5,6 +5,7 @@ import { AuthProvider } from '@/components/AuthProvider';
 import Navbar from '@/components/Navbar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import { Toaster } from 'sonner';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -41,6 +42,7 @@ export default async function RootLayout({
           ) : (
             <main>{children}</main>
           )}
+          <Toaster richColors position="top-center" />
         </body>
       </html>
     </AuthProvider>

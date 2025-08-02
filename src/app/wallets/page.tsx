@@ -1,3 +1,4 @@
+import ChangeCurrencyDialog from '@/components/ChangeCurrencyDialog';
 import { Button } from '@/components/ui/button';
 import WalletCard from '@/components/WalletCard';
 import { currencySymbols } from '@/lib/currencySymbols';
@@ -9,7 +10,6 @@ import { redirect } from 'next/navigation';
 import { CiCircleInfo } from 'react-icons/ci';
 import { FaPlus } from 'react-icons/fa';
 import { IoStatsChartSharp } from 'react-icons/io5';
-import { LuRefreshCcw } from 'react-icons/lu';
 
 export default async function WalletsPage() {
   const user = await getAuthenticatedUser();
@@ -37,19 +37,16 @@ export default async function WalletsPage() {
             </span>
           </div>
 
-          <Button variant="outline" className="flex items-center gap-2 ">
-            <LuRefreshCcw />
-            <span className="hidden sm:flex">Change Currency</span>
-          </Button>
+          <ChangeCurrencyDialog />
         </div>
 
         <div className="flex items-center gap-3 w-full">
           <IoStatsChartSharp className="text-2xl" />
           <h3 className="text-xl font-bold">Total Balance:</h3>
-          <span className="text-xl font-bold tracking-wide">
-            {currencySymbol}
-            {Number(totalBalance).toFixed(2)}
-          </span>
+          <div className="text-xl font-bold tracking-wide flex items-end gap-1">
+            <span>{Number(totalBalance).toFixed(2)}</span>
+            <span className="text-base">{currencySymbol}</span>
+          </div>
         </div>
 
         <div className="flex items-start gap-2 text-xs sm:text-sm text-neutral-500 mt-1">
