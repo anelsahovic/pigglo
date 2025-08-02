@@ -1,5 +1,5 @@
+import AddNewWalletDialog from '@/components/AddNewWalletDialog';
 import ChangeCurrencyDialog from '@/components/ChangeCurrencyDialog';
-import { Button } from '@/components/ui/button';
 import WalletCard from '@/components/WalletCard';
 import { currencySymbols } from '@/lib/currencySymbols';
 import { getAuthenticatedUser } from '@/lib/queries/auth';
@@ -8,7 +8,6 @@ import { getUserWallets } from '@/lib/queries/wallets';
 import { getTotalBalanceFromWallets } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { CiCircleInfo } from 'react-icons/ci';
-import { FaPlus } from 'react-icons/fa';
 import { IoStatsChartSharp } from 'react-icons/io5';
 
 export default async function WalletsPage() {
@@ -37,7 +36,7 @@ export default async function WalletsPage() {
             </span>
           </div>
 
-          <ChangeCurrencyDialog />
+          <ChangeCurrencyDialog user={dbUser} />
         </div>
 
         <div className="flex items-center gap-3 w-full">
@@ -65,11 +64,7 @@ export default async function WalletsPage() {
           <h3 className="text-2xl font-bold tracking-tight text-center text-muted-foreground">
             Wallets List
           </h3>
-          <Button variant="outline" className="flex items-center gap-2 ">
-            <FaPlus />
-
-            <span className="hidden sm:flex">Add New Wallet</span>
-          </Button>
+          <AddNewWalletDialog />
         </div>
 
         {/* wallets cards */}

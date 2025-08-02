@@ -29,6 +29,8 @@ export async function updateUserCurrency(
         currency: result.data.currency,
       },
     });
+
+    revalidatePath('/wallets');
     return {
       success: true,
       message: 'Currency updated successfully',
@@ -37,10 +39,7 @@ export async function updateUserCurrency(
     console.error(error);
     return {
       success: false,
-
       message: 'An error occurred while updating currency',
     };
-  } finally {
-    revalidatePath('/wallets');
   }
 }
