@@ -57,7 +57,7 @@
   --popover-foreground: oklch(0.2 0.01 285);
 
   /* Piggy Pink Primary */
-  --primary: lab(71.93% 44.31 8.34); /* soft pink */
+  --primary: oklch(77.514% 0.13618 9.299); /* soft pink */
   --primary-foreground: oklch(0.1 0.02 15); /* dark text on pink */
 
   /* Muted Violet Secondary */

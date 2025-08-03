@@ -44,3 +44,14 @@ export async function getTotalBalanceFromWallets(
 
   return totalBalance;
 }
+
+export function formatCurrency(
+  amount: number | string | bigint,
+  currency: Currency = 'EUR'
+) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+  }).format(Number(amount));
+}

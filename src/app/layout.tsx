@@ -36,7 +36,7 @@ export default async function RootLayout({
               <main className="relative w-full">
                 <SidebarTrigger />
 
-                <div className="p-4 sm:pt-10">{children}</div>
+                <div className=" sm:pt-10">{children}</div>
               </main>
             </SidebarProvider>
           ) : (

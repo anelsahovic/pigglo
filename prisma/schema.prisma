@@ -36,9 +36,10 @@ model Wallet {
 
 model Transaction {
   id          String          @id @default(uuid())
+  title       String?
+  description String?
   type        TransactionType
   amount      Decimal
-  description String?
   wallet      Wallet          @relation(fields: [walletId], references: [id])
   walletId    String
   user        User            @relation(fields: [userId], references: [id])
