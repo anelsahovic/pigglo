@@ -1,13 +1,6 @@
 import TransactionCard from '@/components/TransactionCard';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import WalletDropDown from '@/components/WalletDropDown';
 import { walletIconMap } from '@/lib/ walletIcons';
 import { currencySymbols } from '@/lib/currencySymbols';
 import { getWalletById } from '@/lib/queries/wallets';
@@ -17,7 +10,6 @@ import { redirect } from 'next/navigation';
 import { FaChevronLeft, FaMoneyBillWave, FaPlus } from 'react-icons/fa';
 import { FaArrowRightArrowLeft } from 'react-icons/fa6';
 import { LuClock3 } from 'react-icons/lu';
-import { MdMoreVert } from 'react-icons/md';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -29,6 +21,14 @@ export default async function ShowWalletPage({ params }: Props) {
   const wallet = await getWalletById(id);
 
   if (!wallet) redirect('wallets');
+
+  const walletDataForClient = {
+    id: wallet.id,
+    name: wallet.name,
+    balance: Number(wallet.balance),
+    currency: wallet.currency,
+    icon: wallet.icon,
+  };
 
   const incomeTransactions = wallet.transactions.filter(
     (transaction) => transaction.type === 'INCOME'
@@ -58,17 +58,7 @@ export default async function ShowWalletPage({ params }: Props) {
             {wallet.name}
           </h2>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <MdMoreVert className="text-2xl cursor-pointer" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Options</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Edit</DropdownMenuItem>
-              <DropdownMenuItem>Delete</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <WalletDropDown wallet={walletDataForClient} />
         </div>
 
         {/* Wallet Info Section */}

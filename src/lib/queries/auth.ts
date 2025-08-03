@@ -6,3 +6,10 @@ export async function getAuthenticatedUser() {
   if (!user?.id) throw new Error('Unauthorized');
   return user;
 }
+
+export async function checkIfAuthorized(ownerId: string) {
+  const user = await getAuthenticatedUser();
+  if (user.id !== ownerId) {
+    throw new Error('Unauthorized access');
+  }
+}

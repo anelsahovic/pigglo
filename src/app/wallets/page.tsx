@@ -1,5 +1,5 @@
 import AddNewWalletDialog from '@/components/AddNewWalletDialog';
-import ChangeCurrencyDialog from '@/components/ChangeCurrencyDialog';
+import ChangeUserCurrencyDialog from '@/components/ChangeUserCurrencyDialog';
 import WalletCard from '@/components/WalletCard';
 import { currencySymbols } from '@/lib/currencySymbols';
 import { getAuthenticatedUser } from '@/lib/queries/auth';
@@ -36,7 +36,7 @@ export default async function WalletsPage() {
             </span>
           </div>
 
-          <ChangeCurrencyDialog user={dbUser} />
+          <ChangeUserCurrencyDialog user={dbUser} />
         </div>
 
         <div className="flex items-center gap-3 w-full">

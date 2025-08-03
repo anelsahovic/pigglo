@@ -9,12 +9,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export async function exchangeCurrencyRate(
-  userCurrency: Currency,
-  otherCurrency: Currency,
+  toCurrency: Currency,
+  fromCurrency: Currency,
   balance: Decimal
 ) {
   const rate = await prisma.exchangeRate.findFirst({
-    where: { baseCurrency: otherCurrency, targetCurrency: userCurrency },
+    where: { baseCurrency: fromCurrency, targetCurrency: toCurrency },
   });
 
   if (!rate) {

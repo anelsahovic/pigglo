@@ -43,7 +43,7 @@ interface Props {
   user: User;
 }
 
-export default function ChangeCurrencyDialog({ user }: Props) {
+export default function ChangeUserCurrencyDialog({ user }: Props) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -92,13 +92,15 @@ export default function ChangeCurrencyDialog({ user }: Props) {
 
         <div className="flex flex-col justify-center items-center mt-4">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
                 name="currency"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Select the currency</FormLabel>
+                    <FormLabel className="flex items-center justify-center w-full uppercase">
+                      Select the currency
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -129,7 +131,7 @@ export default function ChangeCurrencyDialog({ user }: Props) {
                   </FormItem>
                 )}
               />
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center justify-center gap-4">
                 <DialogClose asChild>
                   <Button type="button" variant="outline">
                     Cancel
