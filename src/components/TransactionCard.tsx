@@ -13,6 +13,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { currencySymbols } from '@/lib/currencySymbols';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from './ui/button';
+import DeleteTransactionDialog from './DeleteTransactionDialog';
 
 type Props = {
   transaction: Transaction;
@@ -110,7 +111,8 @@ export default async function TransactionCard({ transaction }: Props) {
           </div>
 
           <div className="w-full flex justify-end items-center gap-4 mt-4">
-            <Button variant="destructive">Delete</Button>
+            <DeleteTransactionDialog transactionId={transaction.id} />
+
             <Button variant="outline">Edit</Button>
           </div>
         </div>

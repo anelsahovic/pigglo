@@ -6,6 +6,7 @@ import {
   AddNewTransactionSchema,
   AddNewTransactionType,
 } from '@/lib/zodSchemas/transaction.schemas';
+import { Decimal } from '@prisma/client/runtime/library';
 import { revalidatePath } from 'next/cache';
 
 export async function createTransaction(data: AddNewTransactionType) {
@@ -52,8 +53,8 @@ export async function createTransaction(data: AddNewTransactionType) {
         data: {
           balance:
             result.data.type === 'INCOME'
-              ? wallet.balance.plus(result.data.amount)
-              : wallet.balance.minus(result.data.amount),
+              ? new Decimal(wallet.balance).plus(result.data.amount)
+              : new Decimal(wallet.balance).minus(result.data.amount),
         },
       }),
     ]);
@@ -71,6 +72,65 @@ export async function createTransaction(data: AddNewTransactionType) {
     return {
       success: false,
       message: 'An error occurred while creating transaction',
+    };
+  }
+}
+
+export async function deleteTransaction(id: string) {
+  const transaction = await prisma.transaction.findUnique({ where: { id } });
+
+  if (!transaction) {
+    return {
+      success: false,
+      message: 'No transaction found',
+    };
+  }
+
+  const wallet = await prisma.wallet.findUnique({
+    where: {
+      id: transaction?.walletId,
+    },
+  });
+
+  if (!wallet) {
+    return {
+      success: false,
+      message: 'No wallet found',
+    };
+  }
+
+  await checkIfAuthorized(transaction.userId);
+
+  try {
+    await prisma.$transaction([
+      prisma.transaction.delete({ where: { id } }),
+
+      prisma.wallet.update({
+        where: {
+          id: transaction.walletId,
+        },
+        data: {
+          balance:
+            transaction.type === 'INCOME'
+              ? new Decimal(wallet.balance).minus(transaction.amount)
+              : new Decimal(wallet.balance).plus(transaction.amount),
+        },
+      }),
+    ]);
+
+    revalidatePath('/transactions');
+    revalidatePath('/wallets');
+    revalidatePath(`/wallets/${transaction.walletId}`);
+
+    return {
+      success: true,
+      message: 'Transaction deleted successfully',
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: 'An error occurred while deleting transaction',
     };
   }
 }
