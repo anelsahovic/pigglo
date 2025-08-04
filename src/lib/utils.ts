@@ -55,3 +55,13 @@ export function formatCurrency(
     minimumFractionDigits: 2,
   }).format(Number(amount));
 }
+
+export function transformWalletForClient(wallet: Wallet) {
+  return {
+    id: wallet.id,
+    name: wallet.name,
+    balance: Number(wallet.balance),
+    currency: wallet.currency,
+    icon: wallet.icon,
+  };
+}

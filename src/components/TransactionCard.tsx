@@ -12,6 +12,7 @@ import { FaDownLong, FaUpLong } from 'react-icons/fa6';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { currencySymbols } from '@/lib/currencySymbols';
 import { formatCurrency } from '@/lib/utils';
+import { Button } from './ui/button';
 
 type Props = {
   transaction: Transaction;
@@ -47,15 +48,20 @@ export default async function TransactionCard({ transaction }: Props) {
           </div>
 
           {/* Right: Amount */}
-          <div className={`flex items-center gap-2 font-semibold ${iconClass}`}>
-            <p>{sign}</p>
-            <p className="flex items-end gap-1">
-              <span>
-                {formatCurrency(Number(transaction.amount), wallet?.currency)}
-              </span>
-              <span className="text-sm">
-                {currencySymbols[wallet?.currency]}
-              </span>
+          <div className={`flex flex-col items-end`}>
+            <div
+              className={`flex items-center gap-2 justify-end font-semibold ${iconClass}`}
+            >
+              <p>{sign}</p>
+              <p className="flex items-end gap-1">
+                <span>{transaction.amount.toFixed(2)}</span>
+                <span className="text-sm">
+                  {currencySymbols[wallet?.currency]}
+                </span>
+              </p>
+            </div>
+            <p className="text-muted-foreground text-xs italic">
+              ({wallet.currency})
             </p>
           </div>
         </button>
@@ -85,7 +91,6 @@ export default async function TransactionCard({ transaction }: Props) {
             <span className={`${iconClass} font-medium`}>
               {sign}
               {formatCurrency(Number(transaction.amount), wallet?.currency)}
-              {currencySymbols[wallet?.currency]}
             </span>
           </div>
 
@@ -102,6 +107,11 @@ export default async function TransactionCard({ transaction }: Props) {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Currency</span>
             <span>{wallet?.currency}</span>
+          </div>
+
+          <div className="w-full flex justify-end items-center gap-4 mt-4">
+            <Button variant="destructive">Delete</Button>
+            <Button variant="outline">Edit</Button>
           </div>
         </div>
       </DialogContent>

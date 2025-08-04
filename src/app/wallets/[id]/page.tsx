@@ -1,13 +1,16 @@
+import AddNewTransactionDialog from '@/components/AddNewTransactionDialog';
 import TransactionCard from '@/components/TransactionCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import WalletDropDown from '@/components/WalletDropDown';
 import { walletIconMap } from '@/lib/ walletIcons';
 import { currencySymbols } from '@/lib/currencySymbols';
-import { getWalletById } from '@/lib/queries/wallets';
+import { getAuthenticatedUser } from '@/lib/queries/auth';
+import { getUserWallets, getWalletById } from '@/lib/queries/wallets';
+import { transformWalletForClient } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { FaChevronLeft, FaMoneyBillWave, FaPlus } from 'react-icons/fa';
+import { FaChevronLeft, FaMoneyBillWave } from 'react-icons/fa';
 import { FaArrowRightArrowLeft } from 'react-icons/fa6';
 import { LuClock3 } from 'react-icons/lu';
 
@@ -22,13 +25,13 @@ export default async function ShowWalletPage({ params }: Props) {
 
   if (!wallet) redirect('wallets');
 
-  const walletDataForClient = {
-    id: wallet.id,
-    name: wallet.name,
-    balance: Number(wallet.balance),
-    currency: wallet.currency,
-    icon: wallet.icon,
-  };
+  const user = await getAuthenticatedUser();
+  const wallets = await getUserWallets(user.id);
+  const allWalletsDataForClientSide = wallets.map((wallet) =>
+    transformWalletForClient(wallet)
+  );
+
+  const walletDataForClient = transformWalletForClient(wallet);
 
   const incomeTransactions = wallet.transactions.filter(
     (transaction) => transaction.type === 'INCOME'
@@ -116,7 +119,10 @@ export default async function ShowWalletPage({ params }: Props) {
       <div className="mt-[350px] w-full p-4 flex flex-col gap-2">
         <div className="w-full flex items-center justify-between">
           <h2 className="text-xl font-semibold mb-4">Transactions List</h2>
-          <FaPlus />
+          <AddNewTransactionDialog
+            wallets={allWalletsDataForClientSide}
+            defaultWalletId={id}
+          />
         </div>
         <div className="w-full flex flex-col  items-center">
           <Tabs defaultValue="all" className="w-full ">
