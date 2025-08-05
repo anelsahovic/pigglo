@@ -76,10 +76,10 @@ export default function EditTransactionTypeDialog({ transaction }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Wallet</DialogTitle>
+          <DialogTitle>Edit Transaction Type</DialogTitle>
           <DialogDescription>
-            Changing the data in these fields will update the wallet data in
-            database
+            Changing the data in these fields will update the transaction type
+            and update the wallet balance accordingly
           </DialogDescription>
         </DialogHeader>
 

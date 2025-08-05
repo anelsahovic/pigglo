@@ -71,10 +71,10 @@ export default function EditTransactionMetadataDialog({ transaction }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Wallet</DialogTitle>
+          <DialogTitle>Edit Transaction Metadata</DialogTitle>
           <DialogDescription>
-            Changing the data in these fields will update the wallet data in
-            database
+            Changing the data in these fields will update the transaction data
+            in database
           </DialogDescription>
         </DialogHeader>
 

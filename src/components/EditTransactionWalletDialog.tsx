@@ -81,10 +81,10 @@ export default function EditTransactionWalletDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Wallet</DialogTitle>
+          <DialogTitle>Edit Transaction Wallet</DialogTitle>
           <DialogDescription>
-            Changing the data in these fields will update the wallet data in
-            database
+            Changing these fields will update the transaction and reflect the
+            changes in both wallets balances
           </DialogDescription>
         </DialogHeader>
 
