@@ -7,21 +7,31 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog';
-import { getWalletById } from '@/lib/queries/wallets';
+import { getUserWallets, getWalletById } from '@/lib/queries/wallets';
 import { FaDownLong, FaUpLong } from 'react-icons/fa6';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { currencySymbols } from '@/lib/currencySymbols';
-import { formatCurrency } from '@/lib/utils';
-import { Button } from './ui/button';
+import { formatCurrency, transformWalletForClient } from '@/lib/utils';
 import DeleteTransactionDialog from './DeleteTransactionDialog';
+import EditTransactionMetadataDialog from './EditTransactionMetadataDialog';
+import EditTransactionAmountDialog from './EditTransactionAmountDialog';
+import EditTransactionTypeDialog from './EditTransactionTypeDialog';
+import EditTransactionWalletDialog from './EditTransactionWalletDialog';
+import { getAuthenticatedUser } from '@/lib/queries/auth';
 
 type Props = {
   transaction: Transaction;
 };
 
 export default async function TransactionCard({ transaction }: Props) {
+  const user = await getAuthenticatedUser();
   const wallet = await getWalletById(transaction.walletId);
   if (!wallet) return;
+
+  const fetchedWallets = await getUserWallets(user.id);
+  const clientWallets = fetchedWallets.map((wallet) =>
+    transformWalletForClient(wallet)
+  );
 
   const isIncome = transaction.type === 'INCOME';
   const iconClass = isIncome ? 'text-green-500' : 'text-rose-500';
@@ -69,51 +79,107 @@ export default async function TransactionCard({ transaction }: Props) {
       </DialogTrigger>
 
       {/* Dialog content */}
-      <DialogContent className="max-w-md w-[95%]">
+      <DialogContent className="max-w-xl w-[95%] rounded-2xl shadow-lg bg-white dark:bg-zinc-950">
         <DialogHeader>
-          <DialogTitle className="text-lg flex items-center gap-2">
-            {isIncome ? (
-              <FaDownLong className="text-green-500" />
-            ) : (
-              <FaUpLong className="text-rose-500" />
-            )}
-            {transaction.title || transaction.type}
+          <DialogTitle className="text-xl font-semibold flex items-center gap-2 text-primary">
+            Transaction Details
           </DialogTitle>
-          {transaction.description && (
-            <DialogDescription className="mt-1 text-sm text-muted-foreground">
-              {transaction.description}
-            </DialogDescription>
-          )}
+          <DialogDescription className="text-sm text-muted-foreground">
+            View and update fields for this transaction.
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Amount</span>
-            <span className={`${iconClass} font-medium`}>
-              {sign}
-              {formatCurrency(Number(transaction.amount), wallet?.currency)}
+        <div className="mt-6 space-y-4 text-sm">
+          {/* Title + Description */}
+          <div className="border rounded-xl p-4 bg-muted/50 flex justify-between items-start">
+            <div className="flex flex-col gap-2">
+              <div>
+                <span className="text-xs text-muted-foreground">Title</span>
+                <div className="font-medium">{transaction.title || '—'}</div>
+              </div>
+              <div>
+                <span className="text-xs text-muted-foreground">
+                  Description
+                </span>
+                <div className="line-clamp-2 text-sm">
+                  {transaction.description || '—'}
+                </div>
+              </div>
+            </div>
+            <EditTransactionMetadataDialog
+              transaction={{
+                title: transaction.title,
+                description: transaction.description || '',
+                id: transaction.id,
+              }}
+            />
+          </div>
+
+          {/* Amount + Type */}
+          <div className="flex gap-4">
+            <div className="flex-1 border rounded-xl p-4 bg-muted/50 flex justify-between items-center">
+              <div>
+                <span className="text-xs text-muted-foreground">Amount</span>
+                <div className={`${iconClass} font-medium`}>
+                  {sign}
+                  {formatCurrency(Number(transaction.amount), wallet?.currency)}
+                </div>
+              </div>
+              <EditTransactionAmountDialog
+                transaction={{
+                  amount: Number(transaction.amount),
+                  id: transaction.id,
+                }}
+              />
+            </div>
+
+            <div className="flex-1 border rounded-xl p-4 bg-muted/50 flex justify-between items-center">
+              <div>
+                <span className="text-xs text-muted-foreground">Type</span>
+                <div className="capitalize">
+                  {transaction.type.toLowerCase()}
+                </div>
+              </div>
+              <EditTransactionTypeDialog
+                transaction={{ type: transaction.type, id: transaction.id }}
+              />
+            </div>
+          </div>
+
+          {/* Wallet + Currency */}
+          <div className="flex gap-4">
+            <div className="flex-1 border rounded-xl p-4 bg-muted/50 flex justify-between items-center">
+              <div>
+                <span className="text-xs text-muted-foreground">Wallet</span>
+                <div className="font-medium">{wallet?.name}</div>
+              </div>
+              <EditTransactionWalletDialog
+                transaction={{
+                  walletId: transaction.walletId,
+                  id: transaction.id,
+                }}
+                wallets={clientWallets}
+              />
+            </div>
+
+            <div className="flex-1 border rounded-xl p-4 bg-muted/30">
+              <span className="text-xs text-muted-foreground">Currency</span>
+              <div>{wallet?.currency}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Date + Actions */}
+        <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="text-xs text-muted-foreground">
+            Created on:{' '}
+            <span className="text-foreground">
+              {new Date(transaction.createdAt).toLocaleString()}
             </span>
           </div>
 
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Date</span>
-            <span>{new Date(transaction.createdAt).toLocaleString()}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Wallet</span>
-            <span className="font-medium">{wallet?.name}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Currency</span>
-            <span>{wallet?.currency}</span>
-          </div>
-
-          <div className="w-full flex justify-end items-center gap-4 mt-4">
+          <div className="flex gap-2 self-end">
             <DeleteTransactionDialog transactionId={transaction.id} />
-
-            <Button variant="outline">Edit</Button>
           </div>
         </div>
       </DialogContent>
