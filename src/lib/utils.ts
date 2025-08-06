@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { prisma } from './prisma';
 import { Currency, Wallet } from '@prisma/client';
 import Decimal from 'decimal.js';
+import { LoanTransaction } from '@/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,4 +65,30 @@ export function transformWalletForClient(wallet: Wallet) {
     currency: wallet.currency,
     icon: wallet.icon,
   };
+}
+
+export async function getTotalLoanAmountInMainCurrency(
+  transactions: LoanTransaction[],
+  userMainCurrency: Currency
+): Promise<number> {
+  // map through the transaction amounts, if the same as users return it else exchange the rate to users main currency
+  const convertedAmounts = await Promise.all(
+    transactions.map(async (tx) => {
+      const fromCurrency = tx.wallet.currency;
+      const amount = Number(tx.amount);
+
+      if (fromCurrency === userMainCurrency) {
+        return amount;
+      }
+
+      const converted = await exchangeCurrencyRate(
+        userMainCurrency,
+        fromCurrency,
+        new Decimal(amount)
+      );
+      return Number(converted);
+    })
+  );
+
+  return convertedAmounts.reduce((acc, amount) => acc + amount, 0);
 }

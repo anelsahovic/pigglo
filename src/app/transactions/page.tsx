@@ -10,7 +10,7 @@ import {
 } from '@/lib/queries/transactions';
 import { getUserWallets } from '@/lib/queries/wallets';
 import { transformWalletForClient } from '@/lib/utils';
-import { Transaction } from '@prisma/client';
+import { TransactionExtended } from '@/types';
 
 export default async function TransactionsPage() {
   const user = await getAuthenticatedUser();
@@ -19,9 +19,10 @@ export default async function TransactionsPage() {
     transformWalletForClient(wallet)
   );
 
-  const allTransactions: Transaction[] = await getAllUserTransactions();
-  const incomeTransactions: Transaction[] = await getUsersIncomeTransactions();
-  const expenseTransactions: Transaction[] =
+  const allTransactions: TransactionExtended[] = await getAllUserTransactions();
+  const incomeTransactions: TransactionExtended[] =
+    await getUsersIncomeTransactions();
+  const expenseTransactions: TransactionExtended[] =
     await getUsersExpenseTransactions();
   return (
     <div className="flex flex-col items-center gap-5 w-full h-full p-4">

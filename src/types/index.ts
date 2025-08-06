@@ -1,4 +1,9 @@
-import { Currency, WalletIcon } from '@prisma/client';
+import {
+  Currency,
+  LoanDirection,
+  Transaction,
+  WalletIcon,
+} from '@prisma/client';
 
 export interface WalletClient {
   id: string;
@@ -6,4 +11,19 @@ export interface WalletClient {
   balance: number;
   currency: Currency;
   icon: WalletIcon;
+}
+
+export interface TransactionExtended extends Transaction {
+  loan: {
+    direction: LoanDirection;
+    person: {
+      name: string;
+    };
+  } | null;
+}
+
+export interface LoanTransaction extends TransactionExtended {
+  wallet: {
+    currency: Currency;
+  };
 }

@@ -33,7 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { walletIconMap } from '@/lib/ walletIcons';
+import { walletIconMap } from '@/lib/constants/ walletIcons';
 import {
   AddNewWalletSchema,
   AddNewWalletType,

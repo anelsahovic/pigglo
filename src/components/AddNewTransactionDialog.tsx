@@ -38,7 +38,7 @@ import { createTransaction } from '@/actions/transaction.actions';
 import { toast } from 'sonner';
 import { Textarea } from './ui/textarea';
 import { WalletClient } from '@/types';
-import { walletIconMap } from '@/lib/ walletIcons';
+import { walletIconMap } from '@/lib/constants/ walletIcons';
 import { TransactionType } from '@prisma/client';
 
 type Props = {

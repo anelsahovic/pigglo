@@ -7,6 +7,16 @@ export async function getAllUserTransactions() {
     where: {
       userId: user.id,
     },
+    include: {
+      loan: {
+        select: {
+          direction: true,
+          person: {
+            select: { name: true },
+          },
+        },
+      },
+    },
     orderBy: {
       updatedAt: 'desc',
     },
@@ -20,6 +30,16 @@ export async function getUsersIncomeTransactions() {
       userId: user.id,
       type: 'INCOME',
     },
+    include: {
+      loan: {
+        select: {
+          direction: true,
+          person: {
+            select: { name: true },
+          },
+        },
+      },
+    },
     orderBy: {
       updatedAt: 'desc',
     },
@@ -32,6 +52,16 @@ export async function getUsersExpenseTransactions() {
     where: {
       userId: user.id,
       type: 'EXPENSE',
+    },
+    include: {
+      loan: {
+        select: {
+          direction: true,
+          person: {
+            select: { name: true },
+          },
+        },
+      },
     },
     orderBy: {
       updatedAt: 'desc',

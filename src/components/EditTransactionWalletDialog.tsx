@@ -36,7 +36,7 @@ import {
   SelectValue,
 } from './ui/select';
 import { WalletClient } from '@/types';
-import { walletIconMap } from '@/lib/ walletIcons';
+import { walletIconMap } from '@/lib/constants/ walletIcons';
 
 type Props = {
   transaction: { walletId: string; id: string };

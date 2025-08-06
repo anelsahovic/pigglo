@@ -1,7 +1,7 @@
 import AddNewWalletDialog from '@/components/AddNewWalletDialog';
 import ChangeUserCurrencyDialog from '@/components/ChangeUserCurrencyDialog';
 import WalletCard from '@/components/WalletCard';
-import { currencySymbols } from '@/lib/currencySymbols';
+import { currencySymbols } from '@/lib/constants/currencySymbols';
 import { getAuthenticatedUser } from '@/lib/queries/auth';
 import { getDbUserById } from '@/lib/queries/users';
 import { getUserWallets } from '@/lib/queries/wallets';

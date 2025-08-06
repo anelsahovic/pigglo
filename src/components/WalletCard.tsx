@@ -1,7 +1,7 @@
 import { Wallet } from '@prisma/client';
 import { formatDistanceToNow } from 'date-fns';
-import { currencySymbols } from '@/lib/currencySymbols';
-import { walletIconMap } from '@/lib/ walletIcons';
+import { currencySymbols } from '@/lib/constants/currencySymbols';
+import { walletIconMap } from '@/lib/constants/ walletIcons';
 import { FaClockRotateLeft } from 'react-icons/fa6';
 import Link from 'next/link';
 

@@ -1,4 +1,3 @@
-import { Transaction } from '@prisma/client';
 import {
   Dialog,
   DialogContent,
@@ -10,7 +9,7 @@ import {
 import { getUserWallets, getWalletById } from '@/lib/queries/wallets';
 import { FaDownLong, FaUpLong } from 'react-icons/fa6';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { currencySymbols } from '@/lib/currencySymbols';
+import { currencySymbols } from '@/lib/constants/currencySymbols';
 import { formatCurrency, transformWalletForClient } from '@/lib/utils';
 import DeleteTransactionDialog from './DeleteTransactionDialog';
 import EditTransactionMetadataDialog from './EditTransactionMetadataDialog';
@@ -18,9 +17,10 @@ import EditTransactionAmountDialog from './EditTransactionAmountDialog';
 import EditTransactionTypeDialog from './EditTransactionTypeDialog';
 import EditTransactionWalletDialog from './EditTransactionWalletDialog';
 import { getAuthenticatedUser } from '@/lib/queries/auth';
+import { TransactionExtended } from '@/types';
 
 type Props = {
-  transaction: Transaction;
+  transaction: TransactionExtended;
 };
 
 export default async function TransactionCard({ transaction }: Props) {
@@ -33,6 +33,7 @@ export default async function TransactionCard({ transaction }: Props) {
     transformWalletForClient(wallet)
   );
 
+  const isLoan: boolean = !!transaction.loanId;
   const isIncome = transaction.type === 'INCOME';
   const iconClass = isIncome ? 'text-green-500' : 'text-rose-500';
   const sign = isIncome ? '+' : '-';
@@ -40,7 +41,9 @@ export default async function TransactionCard({ transaction }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="w-full cursor-pointer hover:border-primary transition-colors p-4 border-b flex items-center justify-between text-left ">
+        <button className="w-full bg-white rounded-lg cursor-pointer border border-neutral-100 hover:shadow transition-colors p-4 shadow-xs flex items-center justify-between text-left relative ">
+          {/* loan badge */}
+
           {/* Left: Icon + Meta */}
           <div className="flex items-center gap-4">
             {isIncome ? (
@@ -53,7 +56,12 @@ export default async function TransactionCard({ transaction }: Props) {
                 {formatDistanceToNowStrict(transaction.createdAt)} ago
               </p>
               <p className="font-medium truncate max-w-[180px]">
-                {transaction.title || transaction.type}
+                {transaction.title}{' '}
+                {isLoan && (
+                  <span className="text-xs font-bold text-amber-600">
+                    (LOAN)
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -80,7 +88,7 @@ export default async function TransactionCard({ transaction }: Props) {
 
       {/* Dialog content */}
       <DialogContent className="max-w-xl w-[95%] rounded-2xl shadow-lg bg-white dark:bg-zinc-950">
-        <DialogHeader>
+        <DialogHeader className="flex flex-col items-start justify-start">
           <DialogTitle className="text-xl font-semibold flex items-center gap-2 text-primary">
             Transaction Details
           </DialogTitle>
@@ -167,6 +175,27 @@ export default async function TransactionCard({ transaction }: Props) {
               <div>{wallet?.currency}</div>
             </div>
           </div>
+
+          {/* Loan info */}
+          {isLoan && (
+            <div className="flex gap-4">
+              <div className="flex-1 border rounded-xl p-4 bg-muted/30">
+                <span className="text-xs text-muted-foreground">Loan Type</span>
+                <div>
+                  {transaction?.loan?.direction === 'FROM_SOMEONE'
+                    ? 'Borrowed'
+                    : 'Lend'}
+                </div>
+              </div>
+
+              <div className="flex-1 border rounded-xl p-4 bg-muted/30">
+                <span className="text-xs text-muted-foreground">
+                  Related Person
+                </span>
+                <div>{transaction?.loan?.person.name}</div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer Date + Actions */}
