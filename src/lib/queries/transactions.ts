@@ -68,3 +68,74 @@ export async function getUsersExpenseTransactions() {
     },
   });
 }
+
+export async function getAllUserTransactionsByWalletId(walletId: string) {
+  const user = await getAuthenticatedUser();
+  return await prisma.transaction.findMany({
+    where: {
+      userId: user.id,
+      walletId,
+    },
+    include: {
+      loan: {
+        select: {
+          direction: true,
+          person: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+  });
+}
+
+export async function getUsersIncomeTransactionsByWalletId(walletId: string) {
+  const user = await getAuthenticatedUser();
+  return await prisma.transaction.findMany({
+    where: {
+      userId: user.id,
+      type: 'INCOME',
+      walletId,
+    },
+    include: {
+      loan: {
+        select: {
+          direction: true,
+          person: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+  });
+}
+
+export async function getUsersExpenseTransactionsByWalletId(walletId: string) {
+  const user = await getAuthenticatedUser();
+  return await prisma.transaction.findMany({
+    where: {
+      userId: user.id,
+      type: 'EXPENSE',
+      walletId,
+    },
+    include: {
+      loan: {
+        select: {
+          direction: true,
+          person: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+  });
+}

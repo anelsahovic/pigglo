@@ -5,8 +5,15 @@ import WalletDropDown from '@/components/WalletDropDown';
 import { walletIconMap } from '@/lib/constants/ walletIcons';
 import { currencySymbols } from '@/lib/constants/currencySymbols';
 import { getAuthenticatedUser } from '@/lib/queries/auth';
+import { getUsersRelatedPersons } from '@/lib/queries/relatedPerson';
+import {
+  getAllUserTransactionsByWalletId,
+  getUsersExpenseTransactionsByWalletId,
+  getUsersIncomeTransactionsByWalletId,
+} from '@/lib/queries/transactions';
 import { getUserWallets, getWalletById } from '@/lib/queries/wallets';
 import { transformWalletForClient } from '@/lib/utils';
+import { TransactionExtended } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -27,18 +34,20 @@ export default async function ShowWalletPage({ params }: Props) {
 
   const user = await getAuthenticatedUser();
   const wallets = await getUserWallets(user.id);
-  const allWalletsDataForClientSide = wallets.map((wallet) =>
+  const allWalletsClientSide = wallets.map((wallet) =>
     transformWalletForClient(wallet)
   );
 
-  const walletDataForClient = transformWalletForClient(wallet);
+  const walletClientSide = transformWalletForClient(wallet);
 
-  const incomeTransactions = wallet.transactions.filter(
-    (transaction) => transaction.type === 'INCOME'
-  );
-  const expenseTransactions = wallet.transactions.filter(
-    (transaction) => transaction.type === 'EXPENSE'
-  );
+  const allTransactions: TransactionExtended[] =
+    await getAllUserTransactionsByWalletId(wallet.id);
+  const incomeTransactions: TransactionExtended[] =
+    await getUsersIncomeTransactionsByWalletId(wallet.id);
+  const expenseTransactions: TransactionExtended[] =
+    await getUsersExpenseTransactionsByWalletId(wallet.id);
+
+  const relatedPersons = await getUsersRelatedPersons();
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full relative">
@@ -61,7 +70,7 @@ export default async function ShowWalletPage({ params }: Props) {
             {wallet.name}
           </h2>
 
-          <WalletDropDown wallet={walletDataForClient} />
+          <WalletDropDown wallet={walletClientSide} />
         </div>
 
         {/* Wallet Info Section */}
@@ -120,7 +129,8 @@ export default async function ShowWalletPage({ params }: Props) {
         <div className="w-full flex items-center justify-between">
           <h2 className="text-xl font-semibold mb-4">Transactions List</h2>
           <AddNewTransactionDialog
-            wallets={allWalletsDataForClientSide}
+            wallets={allWalletsClientSide}
+            relatedPersons={relatedPersons}
             defaultWalletId={id}
           />
         </div>
@@ -142,7 +152,7 @@ export default async function ShowWalletPage({ params }: Props) {
                 <p className="text-gray-500">No transactions yet.</p>
               ) : (
                 <div className="space-y-2">
-                  {wallet.transactions.map((tx) => (
+                  {allTransactions.map((tx) => (
                     <TransactionCard key={tx.id} transaction={tx} />
                   ))}
                 </div>

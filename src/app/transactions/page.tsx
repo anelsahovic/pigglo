@@ -3,6 +3,7 @@ import TransactionCard from '@/components/TransactionCard';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getAuthenticatedUser } from '@/lib/queries/auth';
+import { getUsersRelatedPersons } from '@/lib/queries/relatedPerson';
 import {
   getAllUserTransactions,
   getUsersExpenseTransactions,
@@ -19,6 +20,8 @@ export default async function TransactionsPage() {
     transformWalletForClient(wallet)
   );
 
+  const relatedPersons = await getUsersRelatedPersons();
+
   const allTransactions: TransactionExtended[] = await getAllUserTransactions();
   const incomeTransactions: TransactionExtended[] =
     await getUsersIncomeTransactions();
@@ -34,7 +37,10 @@ export default async function TransactionsPage() {
 
       <div className="w-full flex  items-center justify-between">
         <p className="text-foreground ">Recent transactions</p>
-        <AddNewTransactionDialog wallets={walletsDataForClient} />
+        <AddNewTransactionDialog
+          wallets={walletsDataForClient}
+          relatedPersons={relatedPersons}
+        />
       </div>
 
       <div className="w-full flex flex-col  items-center">

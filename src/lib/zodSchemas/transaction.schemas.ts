@@ -7,8 +7,10 @@ export const AddNewTransactionSchema = z.object({
     .max(50, 'Max Transaction length is 50 characters'),
   description: z.string().optional(),
   type: z.enum(['INCOME', 'EXPENSE']),
-  amount: z.coerce.number() as ZodCoercedNumber<number>,
-  walletId: z.string(),
+  amount: z.coerce
+    .number()
+    .min(1, 'Amount is required') as ZodCoercedNumber<number>,
+  walletId: z.string().min(1, 'Wallet is required'),
 });
 
 export type AddNewTransactionType = z.infer<typeof AddNewTransactionSchema>;

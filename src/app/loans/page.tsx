@@ -1,6 +1,5 @@
 import { MdQueryStats } from 'react-icons/md';
 import { RiArrowDownCircleLine, RiArrowUpCircleLine } from 'react-icons/ri';
-import { BsArrowUpRightCircle, BsArrowDownLeftCircle } from 'react-icons/bs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { getUserLoans } from '@/lib/queries/loans';
@@ -8,10 +7,15 @@ import TransactionCard from '@/components/TransactionCard';
 import { LoanTransaction } from '@/types';
 import { getAuthenticatedUser } from '@/lib/queries/auth';
 import { getDbUserById } from '@/lib/queries/users';
-import { getTotalLoanAmountInMainCurrency } from '@/lib/utils';
+import {
+  getTotalLoanAmountInMainCurrency,
+  transformWalletForClient,
+} from '@/lib/utils';
 import { currencySymbols } from '@/lib/constants/currencySymbols';
 import { USER_ICONS } from '@/lib/constants/userIcons';
 import { getUsersRelatedPersons } from '@/lib/queries/relatedPerson';
+import AddNewLoanDialog from '@/components/AddNewLoanDialog';
+import { getUserWallets } from '@/lib/queries/wallets';
 
 export default async function LoansPage() {
   const authUser = await getAuthenticatedUser();
@@ -20,6 +24,11 @@ export default async function LoansPage() {
   const loans = await getUserLoans();
 
   const relatedPersons = await getUsersRelatedPersons();
+
+  const wallets = await getUserWallets(authUser.id);
+  const walletsDataForClient = wallets.map((wallet) =>
+    transformWalletForClient(wallet)
+  );
 
   // extract loan transactions
   const loanTransactions: LoanTransaction[] = loans.flatMap((loan) =>
@@ -103,19 +112,17 @@ export default async function LoansPage() {
 
       {/* Action Buttons */}
       <div className="flex w-full max-w-xl mx-auto gap-4">
-        <Button className="flex items-center justify-center flex-1 min-w-[140px] gap-2 bg-gradient-to-br from-teal-700 to-emerald-500 text-white cursor-pointer p-6 sm:p-7 rounded-full shadow hover:shadow-md text-center">
-          <BsArrowUpRightCircle className="size-6" />
-          <span className="break-words text-sm sm:text-lg  font-medium">
-            Lend Money
-          </span>
-        </Button>
+        <AddNewLoanDialog
+          loanType="lend"
+          wallets={walletsDataForClient}
+          relatedPersons={relatedPersons}
+        />
 
-        <Button className="flex items-center justify-center flex-1 min-w-[140px] gap-2 bg-gradient-to-br from-orange-700 to-amber-500 text-white cursor-pointer p-6 sm:p-7 rounded-full shadow hover:shadow-md text-center">
-          <BsArrowDownLeftCircle className="size-5" />
-          <span className="break-words text-sm sm:text-lg font-medium">
-            Borrow Money
-          </span>
-        </Button>
+        <AddNewLoanDialog
+          loanType="borrow"
+          wallets={walletsDataForClient}
+          relatedPersons={relatedPersons}
+        />
       </div>
 
       {/* Related People */}
