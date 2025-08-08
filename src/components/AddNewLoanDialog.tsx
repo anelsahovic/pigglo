@@ -38,15 +38,15 @@ export default function AddNewLoanDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {loanType === 'lend' ? (
-          <Button className="flex items-center justify-center flex-1 min-w-[140px] gap-2 bg-gradient-to-br from-teal-700 to-emerald-500 text-white cursor-pointer p-6 sm:p-7 rounded-full shadow hover:shadow-md text-center">
-            <BsArrowUpRightCircle className="size-6" />
+          <Button className="flex items-center justify-center flex-1 min-w-[140px] gap-2 bg-gradient-to-br from-orange-700 to-amber-500 text-white cursor-pointer p-6 sm:p-7 rounded-full shadow hover:shadow-md text-center">
+            <BsArrowUpRightCircle className="size-5 sm:size-6 md:size-7" />
             <span className="break-words text-sm sm:text-lg  font-medium">
               Lend Money
             </span>
           </Button>
         ) : (
-          <Button className="flex items-center justify-center flex-1 min-w-[140px] gap-2 bg-gradient-to-br from-orange-700 to-amber-500 text-white cursor-pointer p-6 sm:p-7 rounded-full shadow hover:shadow-md text-center">
-            <BsArrowDownLeftCircle className="size-5" />
+          <Button className="flex items-center justify-center flex-1 min-w-[140px] gap-2  bg-gradient-to-br from-teal-700 to-emerald-500 text-white cursor-pointer p-6 sm:p-7 rounded-full shadow hover:shadow-md text-center">
+            <BsArrowDownLeftCircle className="size-5 sm:size-6 md:size-7" />
             <span className="break-words text-sm sm:text-lg font-medium">
               Borrow Money
             </span>

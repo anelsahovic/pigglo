@@ -48,3 +48,34 @@ export async function getUserLoanById(loanId: string) {
     },
   });
 }
+
+export async function getUserLoansByRelatedPersonId(relatedPersonId: string) {
+  const authUser = await getAuthenticatedUser();
+
+  return prisma.loan.findMany({
+    where: {
+      userId: authUser.id,
+      personId: relatedPersonId,
+    },
+    include: {
+      transactions: {
+        include: {
+          loan: {
+            select: {
+              direction: true,
+              person: {
+                select: { name: true },
+              },
+            },
+          },
+          wallet: {
+            select: {
+              currency: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: { updatedAt: 'desc' },
+  });
+}

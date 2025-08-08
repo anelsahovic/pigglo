@@ -83,7 +83,7 @@ export default async function TransactionCard({ transaction }: Props) {
                 {transaction.title}
               </h4>
               {transaction.description && (
-                <p className="text-xs text-neutral-500 truncate max-w-[200px]">
+                <p className="text-xs text-neutral-500 truncate max-w-[100px]">
                   {transaction.description}
                 </p>
               )}

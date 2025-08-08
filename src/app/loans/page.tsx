@@ -1,7 +1,4 @@
 import { MdQueryStats } from 'react-icons/md';
-import { RiArrowDownCircleLine, RiArrowUpCircleLine } from 'react-icons/ri';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import { getUserLoans } from '@/lib/queries/loans';
 import TransactionCard from '@/components/TransactionCard';
 import { LoanTransaction } from '@/types';
@@ -12,10 +9,13 @@ import {
   transformWalletForClient,
 } from '@/lib/utils';
 import { currencySymbols } from '@/lib/constants/currencySymbols';
-import { USER_ICONS } from '@/lib/constants/userIcons';
 import { getUsersRelatedPersons } from '@/lib/queries/relatedPerson';
 import AddNewLoanDialog from '@/components/AddNewLoanDialog';
 import { getUserWallets } from '@/lib/queries/wallets';
+import AllLoansDialog from '@/components/AllLoansDialog';
+import AllRelatedPersonsDialog from '@/components/AllRelatedPersonsDialog';
+import RelatedPersonCard from '@/components/RelatedPersonCard';
+import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 
 export default async function LoansPage() {
   const authUser = await getAuthenticatedUser();
@@ -62,51 +62,91 @@ export default async function LoansPage() {
   return (
     <div className="flex flex-col gap-6 p-6">
       {/* Loans Insight */}
-      <div className="flex items-start gap-2">
-        <MdQueryStats className="text-3xl mt-2" />
-        <div className="flex flex-col gap-1">
-          <h1 className="flex items-center gap-1 text-3xl font-semibold">
+      <div className="flex items-center gap-3 mb-6">
+        <MdQueryStats className="text-4xl text-primary" />
+        <div className="flex flex-col">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
             Loans Insight
           </h1>
-          <p className="text-sm pl-1 text-muted-foreground">
-            Currently you have <strong>{loanTransactions.length}</strong> loan
-            {loanTransactions.length > 1 ? 's' : ''}
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 max-w-md">
+            You currently have <strong>{loanTransactions.length}</strong> active
+            loan
+            {loanTransactions.length !== 1 ? 's' : ''} tracked in your account.
           </p>
         </div>
       </div>
 
-      {/* Loan Summary */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
-        {/* Lent Money */}
-        <div className="flex flex-col justify-between rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 to-emerald-100 p-5 shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-start gap-3 text-green-700">
-            <RiArrowUpCircleLine className="text-3xl" />
-            <div className="flex flex-col">
-              <h5 className="text-base font-semibold">Lent Money</h5>
-              <p className="text-sm text-emerald-600">Money you gave someone</p>
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        {/* Lent Money  */}
+        <div className="p-5 rounded-xl border border-amber-200 bg-gradient-to-br from-orange-50 to-amber-100 shadow-sm hover:shadow-md transition-all">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-4 text-amber-700">
+            <div className="p-2 rounded-full bg-amber-100">
+              <ArrowUpRight className="size-5" />
             </div>
-          </div>
-          <p className="flex items-center gap-1 text-xl font-bold text-green-800 mt-4 ml-auto">
-            <span>{Number(totalLentAmount).toFixed(2)}</span>
-            <span>{currencySymbols[userMainCurrency]}</span>
-          </p>
-        </div>
-
-        {/* Borrowed Money */}
-        <div className="flex flex-col justify-between rounded-2xl border border-orange-200 bg-gradient-to-br from-amber-50 to-orange-100 p-5 shadow-md hover:shadow-lg transition-shadow">
-          <div className="flex items-start gap-3 text-orange-700">
-            <RiArrowDownCircleLine className="text-3xl" />
-            <div className="flex flex-col">
-              <h5 className="text-base font-semibold">Borrowed Money</h5>
-              <p className="text-sm text-amber-600">
-                Money you took from someone
+            <div>
+              <h5 className="text-base font-semibold">Money Lent</h5>
+              <p className="text-xs text-amber-600">
+                Total money you’ve given to others
               </p>
             </div>
           </div>
-          <p className=" flex items-center gap-1 text-xl font-bold text-orange-800 mt-4 ml-auto">
-            <span>{Number(totalBorrowedAmount).toFixed(2)}</span>
-            <span>{currencySymbols[userMainCurrency]}</span>
-          </p>
+
+          {/* Stats: Balance & Transactions  */}
+          <div className="flex border-t border-amber-200 pt-3 text-amber-700">
+            <div className="flex-1 flex flex-col items-center">
+              <span className="text-sm font-medium">Balance</span>
+              <span className="text-lg font-bold text-amber-800">
+                {Number(totalLentAmount).toFixed(2)}{' '}
+                {currencySymbols[userMainCurrency]}
+              </span>
+            </div>
+
+            <div className="border-l border-amber-200 mx-4"></div>
+
+            <div className="flex-1 flex flex-col items-center">
+              <span className="text-sm font-medium">Transactions</span>
+              <span className="text-lg font-bold text-amber-800">
+                {lentTransactions.length}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Borrowed Money  */}
+        <div className="p-5 rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-emerald-100 shadow-sm hover:shadow-md transition-all">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-4 text-green-700">
+            <div className="p-2 rounded-full bg-green-100">
+              <ArrowDownLeft className="size-5" />
+            </div>
+            <div>
+              <h5 className="text-base font-semibold">Money Borrowed</h5>
+              <p className="text-xs text-green-600">
+                Total money you’ve taken from others
+              </p>
+            </div>
+          </div>
+
+          {/* Stats: Balance & Transactions  */}
+          <div className="flex border-t border-green-200 pt-3 text-green-700">
+            <div className="flex-1 flex flex-col items-center">
+              <span className="text-sm font-medium">Balance</span>
+              <span className="text-lg font-bold text-green-800">
+                {Number(totalBorrowedAmount).toFixed(2)}{' '}
+                {currencySymbols[userMainCurrency]}
+              </span>
+            </div>
+
+            <div className="border-l border-green-200 mx-4"></div>
+
+            <div className="flex-1 flex flex-col items-center">
+              <span className="text-sm font-medium">Transactions</span>
+              <span className="text-lg font-bold text-green-800">
+                {borrowedTransactions.length}
+              </span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -125,30 +165,25 @@ export default async function LoansPage() {
         />
       </div>
 
-      {/* Related People */}
+      {/* Related Persons */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h4 className="text-base font-medium">Related People</h4>
-          <Button variant="link" className="text-sm">
-            See all
-          </Button>
+          <AllRelatedPersonsDialog
+            persons={relatedPersons}
+            userMainCurrency={userMainCurrency}
+          />
         </div>
 
         {/* avatars */}
         <div className="flex gap-4 overflow-hidden">
           {relatedPersons.map((person, index) => (
-            <div
+            <RelatedPersonCard
               key={person.id}
-              className="flex flex-col justify-center items-center gap-1"
-            >
-              <Avatar className="size-14 shadow">
-                <AvatarImage src={USER_ICONS[index % USER_ICONS.length]} />
-                <AvatarFallback className="bg-muted text-sm font-semibold text-foreground">
-                  CN
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm">{person.name.split(' ')[0]}</span>
-            </div>
+              person={person}
+              index={index}
+              userMainCurrency={userMainCurrency}
+            />
           ))}
         </div>
       </div>
@@ -157,9 +192,7 @@ export default async function LoansPage() {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h4 className="text-base font-medium">Recent Transactions</h4>
-          <Button variant="link" className="text-sm">
-            See all
-          </Button>
+          <AllLoansDialog loans={loanTransactions} />
         </div>
 
         <div className="flex flex-col gap-2">
