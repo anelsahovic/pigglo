@@ -10,7 +10,7 @@ export async function getUserWallets(userId: string) {
             select: {
               direction: true,
               person: {
-                select: { name: true },
+                select: { id: true, name: true },
               },
             },
           },

@@ -17,6 +17,7 @@ export interface TransactionExtended extends Transaction {
   loan: {
     direction: LoanDirection;
     person: {
+      id: string;
       name: string;
     };
   } | null;

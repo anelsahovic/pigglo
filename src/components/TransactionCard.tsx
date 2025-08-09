@@ -19,6 +19,8 @@ import { getAuthenticatedUser } from '@/lib/queries/auth';
 import { TransactionExtended } from '@/types';
 import { Badge } from './ui/badge';
 import { FaArrowDown, FaArrowUp, FaExchangeAlt } from 'react-icons/fa';
+import EditLoanPersonDialog from './EditLoanPersonDialog';
+import { getUsersRelatedPersons } from '@/lib/queries/relatedPerson';
 
 type Props = {
   transaction: TransactionExtended;
@@ -33,6 +35,8 @@ export default async function TransactionCard({ transaction }: Props) {
   const clientWallets = fetchedWallets.map((wallet) =>
     transformWalletForClient(wallet)
   );
+
+  const relatedPersons = await getUsersRelatedPersons();
 
   const isLoan: boolean = !!transaction.loanId;
   const isIncome = transaction.type === 'INCOME';
@@ -214,11 +218,21 @@ export default async function TransactionCard({ transaction }: Props) {
                 </div>
               </div>
 
-              <div className="flex-1 border rounded-xl p-4 bg-muted/30">
-                <span className="text-xs text-muted-foreground">
-                  Related Person
-                </span>
-                <div>{transaction?.loan?.person.name}</div>
+              <div className="flex-1 border rounded-xl p-4 bg-muted/30 flex justify-between items-center">
+                <div>
+                  <span className="text-xs text-muted-foreground">
+                    Related Person
+                  </span>
+                  <div>{transaction?.loan?.person.name}</div>
+                </div>
+
+                <EditLoanPersonDialog
+                  relatedPersons={relatedPersons}
+                  transaction={{
+                    id: transaction.id,
+                    personId: transaction.loan?.person.id || '',
+                  }}
+                />
               </div>
             </div>
           )}

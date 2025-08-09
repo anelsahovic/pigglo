@@ -9,7 +9,6 @@ import {
 } from './ui/dialog';
 import { Currency, RelatedPerson } from '@prisma/client';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { USER_ICONS } from '@/lib/constants/userIcons';
 import { getUserLoansByRelatedPersonId } from '@/lib/queries/loans';
 import { getTotalLoanAmountInMainCurrency } from '@/lib/utils';
 import TransactionCard from './TransactionCard';
@@ -29,7 +28,6 @@ type Props = {
 
 export default async function RelatedPersonCard({
   person,
-  index,
   userMainCurrency,
   type = 'avatar',
 }: Props) {
@@ -61,7 +59,7 @@ export default async function RelatedPersonCard({
     type === 'avatar' ? (
       <div className="flex flex-col items-center gap-1 cursor-pointer ">
         <Avatar className="size-14 shadow">
-          <AvatarImage src={USER_ICONS[index % USER_ICONS.length]} />
+          <AvatarImage src={person.iconUrl} />
           <AvatarFallback className="bg-muted text-sm font-semibold text-foreground">
             {person.name
               .split(' ')
@@ -78,7 +76,7 @@ export default async function RelatedPersonCard({
       <div className="flex items-center justify-between p-4 border rounded-lg bg-card shadow-sm hover:shadow-md cursor-pointer transition-all">
         <div className="flex items-center gap-3">
           <Avatar className="size-12">
-            <AvatarImage src={USER_ICONS[index % USER_ICONS.length]} />
+            <AvatarImage src={person.iconUrl} />
             <AvatarFallback className="bg-muted font-semibold text-foreground">
               {person.name
                 .split(' ')
@@ -96,11 +94,11 @@ export default async function RelatedPersonCard({
           </div>
         </div>
         <div className="flex flex-col items-end text-sm">
-          <span className="text-green-600 font-semibold whitespace-nowrap">
-            +{totalLentAmount} {userMainCurrency}
-          </span>
           <span className="text-red-600 font-semibold whitespace-nowrap">
-            -{totalBorrowedAmount} {userMainCurrency}
+            -{totalLentAmount} {userMainCurrency}
+          </span>
+          <span className="text-green-600 font-semibold whitespace-nowrap">
+            +{totalBorrowedAmount} {userMainCurrency}
           </span>
         </div>
       </div>
@@ -123,7 +121,7 @@ export default async function RelatedPersonCard({
           <div className="text-xl font-bold flex items-center gap-3 my-2">
             {/* person icon and name */}
             <Avatar className="size-12">
-              <AvatarImage src={USER_ICONS[index % USER_ICONS.length]} />
+              <AvatarImage src={person.iconUrl} />
               <AvatarFallback className="bg-muted font-semibold text-foreground">
                 {person.name
                   .split(' ')

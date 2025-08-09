@@ -15,7 +15,7 @@ export async function getUserLoans() {
             select: {
               direction: true,
               person: {
-                select: { name: true },
+                select: { id: true, name: true },
               },
             },
           },
@@ -64,7 +64,7 @@ export async function getUserLoansByRelatedPersonId(relatedPersonId: string) {
             select: {
               direction: true,
               person: {
-                select: { name: true },
+                select: { id: true, name: true },
               },
             },
           },

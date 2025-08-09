@@ -5,6 +5,8 @@ import { checkIfAuthorized, getAuthenticatedUser } from '@/lib/queries/auth';
 import {
   AddNewLoanTransactionSchema,
   AddNewLoanTransactionType,
+  EditLoanRelatedPersonSchema,
+  EditLoanRelatedPersonType,
 } from '@/lib/zodSchemas/loan.schemas';
 import { Decimal } from '@prisma/client/runtime/library';
 import { revalidatePath } from 'next/cache';
@@ -91,6 +93,78 @@ export async function createLoanTransaction(data: AddNewLoanTransactionType) {
     return {
       success: false,
       message: 'An error occurred while creating loan transaction',
+    };
+  }
+}
+
+export async function updateLoanRelatedPerson(
+  data: EditLoanRelatedPersonType,
+  transactionId: string
+) {
+  const result = EditLoanRelatedPersonSchema.safeParse(data);
+
+  if (!result.success) {
+    return {
+      success: false,
+      message: 'Invalid data',
+    };
+  }
+
+  const existingLoanTransaction = await prisma.transaction.findUnique({
+    where: { id: transactionId },
+  });
+
+  if (!existingLoanTransaction) {
+    return {
+      success: false,
+      message: 'Loan Transaction not found',
+    };
+  }
+
+  const loan = await prisma.loan.findUnique({
+    where: { id: existingLoanTransaction.loanId || '' },
+  });
+
+  if (!loan) {
+    return {
+      success: false,
+      message: 'Loan not found',
+    };
+  }
+
+  await checkIfAuthorized(existingLoanTransaction.userId);
+
+  if (loan.personId !== result.data.personId) {
+    try {
+      await prisma.loan.update({
+        where: {
+          id: loan.id,
+        },
+        data: {
+          personId: result.data.personId,
+        },
+      });
+
+      revalidatePath('/transactions');
+      revalidatePath('/loans');
+      revalidatePath('/wallets');
+      revalidatePath(`/wallets/${existingLoanTransaction.walletId}`);
+
+      return {
+        success: true,
+        message: 'Loan related person updated successfully',
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        success: false,
+        message: 'An error occurred while updating related person',
+      };
+    }
+  } else {
+    return {
+      success: true,
+      message: 'Loan related person updated successfully',
     };
   }
 }

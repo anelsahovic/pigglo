@@ -16,6 +16,7 @@ import AllLoansDialog from '@/components/AllLoansDialog';
 import AllRelatedPersonsDialog from '@/components/AllRelatedPersonsDialog';
 import RelatedPersonCard from '@/components/RelatedPersonCard';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
+import AddNewRelatedPersonDialog from '@/components/AddNewRelatedPersonDialog';
 
 export default async function LoansPage() {
   const authUser = await getAuthenticatedUser();
@@ -177,6 +178,7 @@ export default async function LoansPage() {
 
         {/* avatars */}
         <div className="flex gap-4 overflow-hidden">
+          <AddNewRelatedPersonDialog />
           {relatedPersons.map((person, index) => (
             <RelatedPersonCard
               key={person.id}

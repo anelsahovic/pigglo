@@ -11,3 +11,11 @@ export const AddNewLoanTransactionSchema = AddNewTransactionSchema.omit({
 export type AddNewLoanTransactionType = z.infer<
   typeof AddNewLoanTransactionSchema
 >;
+
+export const EditLoanRelatedPersonSchema = z.object({
+  personId: z.string().min(1, 'Related Person is required'),
+});
+
+export type EditLoanRelatedPersonType = z.infer<
+  typeof EditLoanRelatedPersonSchema
+>;

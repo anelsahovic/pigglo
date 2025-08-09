@@ -65,6 +65,7 @@ model Loan {
 model RelatedPerson {
   id        String   @id @default(uuid())
   name      String
+  iconUrl   String   @default("/images/user_icons/user_icon1.png")
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   loans     Loan[]
