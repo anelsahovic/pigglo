@@ -13,7 +13,6 @@ import {
   DialogTrigger,
 } from './ui/dialog';
 import { Button } from './ui/button';
-import { FaPlus } from 'react-icons/fa';
 import {
   Form,
   FormControl,
@@ -26,34 +25,38 @@ import { Input } from './ui/input';
 import SubmitButton from './SubmitButton';
 import { Select, SelectContent, SelectItem, SelectTrigger } from './ui/select';
 import {
-  AddNewRelatedPersonSchema,
-  AddNewRelatedPersonType,
+  EditRelatedPersonSchema,
+  EditRelatedPersonType,
 } from '@/lib/zodSchemas/relatedPerson.schemas';
-import { createRelatedPerson } from '@/actions/relatedPerson.actions';
+import { updateRelatedPerson } from '@/actions/relatedPerson.actions';
 import { USER_ICONS } from '@/lib/constants/userIcons';
 import Image from 'next/image';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { RelatedPerson } from '@prisma/client';
+import { MdEdit } from 'react-icons/md';
 
-export default function AddNewRelatedPersonDialog() {
+interface Props {
+  relatedPerson: RelatedPerson;
+}
+
+export default function EditRelatedPersonDialog({ relatedPerson }: Props) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<AddNewRelatedPersonType>({
-    resolver: zodResolver(AddNewRelatedPersonSchema),
+  const form = useForm<EditRelatedPersonType>({
+    resolver: zodResolver(EditRelatedPersonSchema),
     defaultValues: {
-      name: '',
-      icon: 'USER_ICON1',
+      name: relatedPerson.name,
+      icon: relatedPerson.icon,
     },
   });
 
-  async function onSubmit(values: AddNewRelatedPersonType) {
+  async function onSubmit(values: EditRelatedPersonType) {
     setIsSubmitting(true);
 
-    const result = await createRelatedPerson(values);
+    const result = await updateRelatedPerson(values, relatedPerson.id);
 
     if (result.success) {
       toast.success(result.message);
-      form.reset();
       setOpen(false);
     } else {
       toast.error(result.message);
@@ -64,19 +67,15 @@ export default function AddNewRelatedPersonDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <div className="flex flex-col items-center gap-1 cursor-pointer ">
-          <Avatar className="size-14 shadow">
-            <AvatarFallback className="bg-muted text-sm font-semibold text-foreground">
-              <FaPlus />
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm font-medium text-foreground">New</span>
-        </div>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <MdEdit />
+          <span className="hidden sm:flex">Edit</span>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Related Person</DialogTitle>
+          <DialogTitle>Edit Related Person</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>

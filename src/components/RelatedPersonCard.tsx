@@ -15,9 +15,9 @@ import TransactionCard from './TransactionCard';
 import { Separator } from './ui/separator';
 import { ScrollArea } from './ui/scroll-area';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
-import { Button } from './ui/button';
-import { MdEdit } from 'react-icons/md';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import EditRelatedPersonDialog from './EditRelatedPersonDialog';
+import { USER_ICONS } from '../lib/constants/userIcons';
+import DeleteRelatedPersonDialog from './DeleteRelatedPersonDialog';
 
 type Props = {
   person: RelatedPerson;
@@ -59,7 +59,7 @@ export default async function RelatedPersonCard({
     type === 'avatar' ? (
       <div className="flex flex-col items-center gap-1 cursor-pointer ">
         <Avatar className="size-14 shadow">
-          <AvatarImage src={person.iconUrl} />
+          <AvatarImage src={USER_ICONS[person.icon]} />
           <AvatarFallback className="bg-muted text-sm font-semibold text-foreground">
             {person.name
               .split(' ')
@@ -76,7 +76,7 @@ export default async function RelatedPersonCard({
       <div className="flex items-center justify-between p-4 border rounded-lg bg-card shadow-sm hover:shadow-md cursor-pointer transition-all">
         <div className="flex items-center gap-3">
           <Avatar className="size-12">
-            <AvatarImage src={person.iconUrl} />
+            <AvatarImage src={USER_ICONS[person.icon]} />
             <AvatarFallback className="bg-muted font-semibold text-foreground">
               {person.name
                 .split(' ')
@@ -121,7 +121,7 @@ export default async function RelatedPersonCard({
           <div className="text-xl font-bold flex items-center gap-3 my-2">
             {/* person icon and name */}
             <Avatar className="size-12">
-              <AvatarImage src={person.iconUrl} />
+              <AvatarImage src={USER_ICONS[person.icon]} />
               <AvatarFallback className="bg-muted font-semibold text-foreground">
                 {person.name
                   .split(' ')
@@ -135,15 +135,8 @@ export default async function RelatedPersonCard({
 
           {/* action buttons */}
           <div className="flex gap-2">
-            <Button variant="outline">
-              <MdEdit />
-              <span className="hidden sm:flex">Edit</span>
-            </Button>
-            <Button variant="destructive">
-              {' '}
-              <FaRegTrashAlt />
-              <span className="hidden sm:flex">Delete</span>
-            </Button>
+            <EditRelatedPersonDialog relatedPerson={person} />
+            <DeleteRelatedPersonDialog personId={person.id} />
           </div>
         </div>
 

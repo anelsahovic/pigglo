@@ -1,19 +1,16 @@
+import { RelatedPersonIcons } from '@prisma/client';
 import z from 'zod';
 
 export const AddNewRelatedPersonSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  iconUrl: z.enum([
-    '/images/user_icons/user_icon1.png',
-    '/images/user_icons/user_icon2.png',
-    '/images/user_icons/user_icon3.png',
-    '/images/user_icons/user_icon4.png',
-    '/images/user_icons/user_icon5.png',
-    '/images/user_icons/user_icon6.png',
-    '/images/user_icons/user_icon7.png',
-    '/images/user_icons/user_icon8.png',
-    '/images/user_icons/user_icon9.png',
-    '/images/user_icons/user_icon10.png',
-  ]),
+  icon: z.enum(RelatedPersonIcons),
 });
 
 export type AddNewRelatedPersonType = z.infer<typeof AddNewRelatedPersonSchema>;
+
+export const EditRelatedPersonSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  icon: z.enum(RelatedPersonIcons),
+});
+
+export type EditRelatedPersonType = z.infer<typeof EditRelatedPersonSchema>;
