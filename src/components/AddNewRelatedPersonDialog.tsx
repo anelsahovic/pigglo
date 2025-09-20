@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from './ui/dialog';
 import { Button } from './ui/button';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaUserPlus } from 'react-icons/fa';
 import {
   Form,
   FormControl,
@@ -34,7 +34,11 @@ import { USER_ICONS } from '@/lib/constants/userIcons';
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from './ui/avatar';
 
-export default function AddNewRelatedPersonDialog() {
+interface Props {
+  quickAction?: boolean;
+}
+
+export default function AddNewRelatedPersonDialog({ quickAction }: Props) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -65,14 +69,21 @@ export default function AddNewRelatedPersonDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
-        <div className="flex flex-col items-center gap-1 cursor-pointer ">
-          <Avatar className="size-14 shadow">
-            <AvatarFallback className="bg-muted text-sm font-semibold text-foreground">
-              <FaPlus />
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm font-medium text-foreground">New</span>
-        </div>
+        {quickAction ? (
+          <div className="flex flex-col items-center justify-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+            <FaUserPlus className="size-7" />
+            <span>Person </span>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-1 cursor-pointer ">
+            <Avatar className="size-14 shadow">
+              <AvatarFallback className="bg-muted text-sm font-semibold text-foreground">
+                <FaPlus />
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm font-medium text-foreground">New</span>
+          </div>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

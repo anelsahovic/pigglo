@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Button } from './ui/button';
 import {
   Dialog,
@@ -22,6 +22,9 @@ type Props = {
   defaultWalletId?: string;
   defaultTransactionType?: TransactionType;
   defaultDirection?: LoanDirection;
+  quickAction?: boolean;
+  quickActionLabel?: 'Income' | 'Expense' | 'Transaction';
+  quickActionIcon?: ReactNode;
 };
 
 export default function AddNewTransactionDialog({
@@ -30,6 +33,9 @@ export default function AddNewTransactionDialog({
   defaultWalletId,
   defaultTransactionType,
   defaultDirection,
+  quickAction,
+  quickActionLabel,
+  quickActionIcon,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [isLoan, setIsLoan] = useState(false);
@@ -41,15 +47,23 @@ export default function AddNewTransactionDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          onClick={() => setOpen(true)}
-          variant="outline"
-          className="flex items-center gap-2 cursor-pointer"
-        >
-          <FaPlus />
+        {quickAction ? (
+          <button className="flex flex-col items-center justify-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+            {/* <GiReceiveMoney className="size-7" /> */}
+            {quickActionIcon}
+            <span>{quickActionLabel} </span>
+          </button>
+        ) : (
+          <Button
+            onClick={() => setOpen(true)}
+            variant="outline"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <FaPlus />
 
-          <span className="hidden sm:flex">Add New Transaction</span>
-        </Button>
+            <span className="hidden sm:flex">Add New Transaction</span>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

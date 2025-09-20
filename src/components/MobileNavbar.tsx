@@ -3,15 +3,7 @@ import React from 'react';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  FaChartBar,
-  FaWallet,
-  FaUser,
-  FaUserPlus,
-  FaPlusCircle,
-} from 'react-icons/fa';
-import { CgArrowsExchange } from 'react-icons/cg';
-import { LuWallet } from 'react-icons/lu';
+import { FaChartBar, FaWallet, FaUser, FaPlusCircle } from 'react-icons/fa';
 import {
   Drawer,
   DrawerTrigger,
@@ -23,7 +15,7 @@ import {
 } from '@/components/ui/drawer';
 import clsx from 'clsx';
 import { FaArrowRightArrowLeft } from 'react-icons/fa6';
-import { TbLogout2, TbMoneybag, TbUserEdit } from 'react-icons/tb';
+import { TbLogout2, TbUserEdit } from 'react-icons/tb';
 import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 import { IoClose } from 'react-icons/io5';
 
@@ -40,8 +32,13 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button, buttonVariants } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { User } from '@prisma/client';
+import { RelatedPerson, User } from '@prisma/client';
 import Image from 'next/image';
+import AddNewWalletDialog from './AddNewWalletDialog';
+import AddNewTransactionDialog from './AddNewTransactionDialog';
+import { WalletClient } from '@/types';
+import AddNewLoanDialog from './AddNewLoanDialog';
+import AddNewRelatedPersonDialog from './AddNewRelatedPersonDialog';
 
 const mobileNavItems = [
   { href: '/dashboard', icon: <FaChartBar />, label: 'Dashboard' },
@@ -55,9 +52,11 @@ const mobileNavItems = [
 
 type Props = {
   user: User | null;
+  wallets: WalletClient[];
+  relatedPersons: RelatedPerson[];
 };
 
-export default function MobileNavbar({ user }: Props) {
+export default function MobileNavbar({ user, relatedPersons, wallets }: Props) {
   const pathname = usePathname();
 
   if (pathname === '/') return;
@@ -91,30 +90,40 @@ export default function MobileNavbar({ user }: Props) {
               <DrawerDescription>Choose an action</DrawerDescription>
             </DrawerHeader>
             <div className="grid grid-cols-3 gap-4 px-6 py-4 text-center">
-              <ActionItem
-                icon={<GiReceiveMoney className="size-7" />}
-                label="Income"
+              <AddNewTransactionDialog
+                quickAction
+                relatedPersons={relatedPersons}
+                wallets={wallets}
+                defaultTransactionType="INCOME"
+                quickActionLabel="Income"
+                quickActionIcon={<GiReceiveMoney className="size-7" />}
               />
-              <ActionItem
-                icon={<GiPayMoney className="size-7" />}
-                label="Expense"
+              <AddNewTransactionDialog
+                quickAction
+                relatedPersons={relatedPersons}
+                wallets={wallets}
+                defaultTransactionType="EXPENSE"
+                quickActionLabel="Expense"
+                quickActionIcon={<GiPayMoney className="size-7" />}
               />
-              <ActionItem
-                icon={<LuWallet className="size-7" />}
-                label="Wallet"
+
+              <AddNewWalletDialog quickAction />
+
+              <AddNewLoanDialog
+                quickAction
+                loanType="lend"
+                relatedPersons={relatedPersons}
+                wallets={wallets}
               />
-              <ActionItem
-                icon={<CgArrowsExchange className="size-7" />}
-                label="Transaction"
+
+              <AddNewLoanDialog
+                quickAction
+                loanType="borrow"
+                relatedPersons={relatedPersons}
+                wallets={wallets}
               />
-              <ActionItem
-                icon={<TbMoneybag className="size-7" />}
-                label="Loan"
-              />
-              <ActionItem
-                icon={<FaUserPlus className="size-7" />}
-                label="Person"
-              />
+
+              <AddNewRelatedPersonDialog quickAction />
             </div>
           </DrawerContent>
         </Drawer>
@@ -285,14 +294,5 @@ export default function MobileNavbar({ user }: Props) {
         </SheetContent>
       </Sheet>
     </nav>
-  );
-}
-
-function ActionItem({ icon, label }: { icon: React.ReactNode; label: string }) {
-  return (
-    <button className="flex flex-col items-center justify-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors">
-      {icon}
-      <span>{label}</span>
-    </button>
   );
 }

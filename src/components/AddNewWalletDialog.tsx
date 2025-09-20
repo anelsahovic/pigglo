@@ -38,8 +38,13 @@ import {
   AddNewWalletSchema,
   AddNewWalletType,
 } from '@/lib/zodSchemas/wallet.schemas';
+import { LuWallet } from 'react-icons/lu';
 
-export default function AddNewWalletDialog() {
+interface Props {
+  quickAction?: boolean;
+}
+
+export default function AddNewWalletDialog({ quickAction }: Props) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -72,15 +77,22 @@ export default function AddNewWalletDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          onClick={() => setOpen(true)}
-          variant="outline"
-          className="flex items-center gap-2 "
-        >
-          <FaPlus />
+        {quickAction ? (
+          <button className="flex flex-col items-center justify-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+            <LuWallet className="size-7" />
+            <span>Wallet </span>
+          </button>
+        ) : (
+          <Button
+            onClick={() => setOpen(true)}
+            variant="outline"
+            className="flex items-center gap-2 "
+          >
+            <FaPlus />
 
-          <span className="hidden sm:flex">Add New Wallet</span>
-        </Button>
+            <span className="hidden sm:flex">Add New Wallet</span>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
