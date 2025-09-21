@@ -35,9 +35,9 @@ export default function AddNewLoanDialog({
 
   const icon: ReactNode =
     loanType === 'lend' ? (
-      <BsArrowUpRightCircle className="size-5 sm:size-6 md:size-7" />
+      <BsArrowUpRightCircle className="size-5 sm:size-6 " />
     ) : (
-      <BsArrowDownLeftCircle className="size-5 sm:size-6 md:size-7" />
+      <BsArrowDownLeftCircle className="size-5 sm:size-6" />
     );
   const label = loanType === 'lend' ? 'Lend Money' : 'Borrow Money';
   const buttonStyle =
@@ -53,7 +53,7 @@ export default function AddNewLoanDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {quickAction ? (
-          <button className="flex flex-col items-center justify-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+          <button className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
             {icon}
             <span>{label} </span>
           </button>

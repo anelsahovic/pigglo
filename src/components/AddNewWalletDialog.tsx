@@ -78,8 +78,8 @@ export default function AddNewWalletDialog({ quickAction }: Props) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {quickAction ? (
-          <button className="flex flex-col items-center justify-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-            <LuWallet className="size-7" />
+          <button className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+            <LuWallet className="size-7 sm:size-6" />
             <span>Wallet </span>
           </button>
         ) : (

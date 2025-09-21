@@ -31,7 +31,11 @@ export default async function Navbar() {
         relatedPersons={relatedPersons}
         wallets={walletsDataForClient}
       />
-      <AppSidebar user={dbUser} />
+      <AppSidebar
+        user={dbUser}
+        relatedPersons={relatedPersons}
+        wallets={walletsDataForClient}
+      />
     </>
   );
 }

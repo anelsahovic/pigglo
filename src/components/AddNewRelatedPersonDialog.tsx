@@ -70,8 +70,8 @@ export default function AddNewRelatedPersonDialog({ quickAction }: Props) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
         {quickAction ? (
-          <div className="flex flex-col items-center justify-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
-            <FaUserPlus className="size-7" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer ">
+            <FaUserPlus className="size-7 sm:size-6" />
             <span>Person </span>
           </div>
         ) : (

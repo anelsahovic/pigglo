@@ -7,33 +7,72 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { IconType } from 'react-icons/lib';
 import { Separator } from './ui/separator';
+import { WalletClient } from '@/types';
+import { RelatedPerson } from '@prisma/client';
+import AddNewTransactionDialog from './AddNewTransactionDialog';
+import AddNewWalletDialog from './AddNewWalletDialog';
+import AddNewLoanDialog from './AddNewLoanDialog';
+import AddNewRelatedPersonDialog from './AddNewRelatedPersonDialog';
+import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 
-export function SidebarButtons({
-  buttons,
-}: {
-  buttons: {
-    name: string;
-    icon: IconType;
-  }[];
-}) {
+interface Props {
+  wallets: WalletClient[];
+  relatedPersons: RelatedPerson[];
+}
+
+export function SidebarButtons({ relatedPersons, wallets }: Props) {
+  const quickActionButtons = [
+    <AddNewTransactionDialog
+      key="New Income"
+      quickAction
+      relatedPersons={relatedPersons}
+      wallets={wallets}
+      defaultTransactionType="INCOME"
+      quickActionLabel="Income"
+      quickActionIcon={<GiReceiveMoney className="size-7 sm:size-6" />}
+    />,
+    <AddNewTransactionDialog
+      key="New Expense"
+      quickAction
+      relatedPersons={relatedPersons}
+      wallets={wallets}
+      defaultTransactionType="EXPENSE"
+      quickActionLabel="Expense"
+      quickActionIcon={<GiPayMoney className="size-7 sm:size-6" />}
+    />,
+
+    <AddNewWalletDialog key="New Wallet" quickAction />,
+
+    <AddNewLoanDialog
+      key="Lend Money"
+      quickAction
+      loanType="lend"
+      relatedPersons={relatedPersons}
+      wallets={wallets}
+    />,
+
+    <AddNewLoanDialog
+      key="Borrow Money"
+      quickAction
+      loanType="borrow"
+      relatedPersons={relatedPersons}
+      wallets={wallets}
+    />,
+
+    <AddNewRelatedPersonDialog key="New Person" quickAction />,
+  ];
+
   return (
     <SidebarGroup>
       <Separator />
-      <SidebarGroupLabel>Add New</SidebarGroupLabel>
-      <SidebarMenu>
-        {buttons.map((item) => (
-          <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton tooltip={'Add ' + item.name} asChild>
-              <button className="cursor-pointer">
-                <item.icon />
-                <span>{item.name}</span>
-              </button>
-            </SidebarMenuButton>
+      <SidebarGroupLabel>Quick Action</SidebarGroupLabel>
+      <SidebarMenu className="gap-3">
+        {quickActionButtons.map((item, index) => (
+          <SidebarMenuItem key={index}>
+            <SidebarMenuButton asChild>{item}</SidebarMenuButton>
           </SidebarMenuItem>
         ))}
-        <SidebarMenuItem></SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
   );

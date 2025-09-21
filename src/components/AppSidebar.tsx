@@ -13,14 +13,12 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import { User } from '@prisma/client';
-import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
+import { RelatedPerson, User } from '@prisma/client';
 import { LuFileChartLine, LuWallet } from 'react-icons/lu';
-import { CgArrowsExchange } from 'react-icons/cg';
-import { TbMoneybag } from 'react-icons/tb';
-import { FaChartBar, FaUserPlus } from 'react-icons/fa';
+import { FaChartBar } from 'react-icons/fa';
 import { SidebarCopyright } from './SidebarCopyRight';
 import { LiaMoneyCheckAltSolid } from 'react-icons/lia';
+import { WalletClient } from '@/types';
 
 const data = {
   sidebarNav: [
@@ -45,39 +43,15 @@ const data = {
       icon: LiaMoneyCheckAltSolid,
     },
   ],
-  buttons: [
-    {
-      name: 'Income',
-      icon: GiReceiveMoney,
-    },
-    {
-      name: 'Expense',
-      icon: GiPayMoney,
-    },
-    {
-      name: 'Wallet',
-      icon: LuWallet,
-    },
-    {
-      name: 'Transaction',
-      icon: CgArrowsExchange,
-    },
-    {
-      name: 'Loan',
-      icon: TbMoneybag,
-    },
-    {
-      name: 'Person',
-      icon: FaUserPlus,
-    },
-  ],
 };
 
 interface Props extends React.ComponentProps<typeof Sidebar> {
   user: User | null;
+  wallets: WalletClient[];
+  relatedPersons: RelatedPerson[];
 }
 
-export function AppSidebar({ user, ...props }: Props) {
+export function AppSidebar({ user, relatedPersons, wallets, ...props }: Props) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -85,7 +59,7 @@ export function AppSidebar({ user, ...props }: Props) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.sidebarNav} />
-        <SidebarButtons buttons={data.buttons} />
+        <SidebarButtons relatedPersons={relatedPersons} wallets={wallets} />
       </SidebarContent>
       <SidebarFooter>
         <SidebarUser user={user} />
